@@ -7,9 +7,9 @@
 
 struct SimpleSemaphore
 {
-    string SemaphoreName;
+	std::string SemaphoreName;
 	int UserCounter;
-	string ReourceName;
+	std::string ReourceName;
 };
 
 struct MyTask
