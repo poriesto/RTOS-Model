@@ -12,7 +12,7 @@ void OS_MODEL::PringQueue(void)
 }
 void OS_MODEL::DeclareTask(string TaskName, int Priority, void(*fun)(void))
 {
-	if (OsQueue.size() <= MAX_TASKS)
+	if (OsQueue.size() <= MAX_TASKS )
 	{
 	OsTask.TaskName = TaskName;
 	OsTask.Prior = Priority;
