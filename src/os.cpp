@@ -29,11 +29,9 @@ void OS_MODEL::ActivateTask(string Name)
 
 bool OS_MODEL::Schedule(void)
 {
-	function<bool(MyTask, MyTask)> ls = [](MyTask a, MyTask b)
-	{
-		return a.Prior > b.Prior;
-	};
-	OsQueue.sort(ls);
+	OsQueue.sort([](MyTask a, MyTask b){
+				return a.Prior > b.Prior;
+			});
 	return true;
 }
 
