@@ -1,4 +1,4 @@
-CC=clang++
+CC=g++
 CFLAGS=-std=c++11 -Wall -o3 -g
 
 BUILD_DIR  := bin

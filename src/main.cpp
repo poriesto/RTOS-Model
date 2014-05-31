@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
 	OS->ActivateTask("sometask1");
 	cout << "ResQu" << endl;
 	OS -> PringQueueRsc();
+	cout << smp;
 
 	return 0;
 }

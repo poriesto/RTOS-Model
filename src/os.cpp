@@ -15,6 +15,12 @@ ostream& operator <<(ostream& os, const Resource rsc)
 	os << "Resource name: " << rsc.ResourceName << ", Resource TaskNameOwner: " << rsc.TaskNameOwner;
 	return os;
 }
+ostream& operator <<(ostream& os, const SimpleSemaphore smp)
+{
+	os << "Semaphore name: " << smp.SemaphoreName << ", Counter: " << smp.Counter <<
+		", Aviavable: " << smp.Aviavable << ", Resource: " << smp.ResourceName;
+	return os;
+}
 
 void OS_MODEL::PringQueue(void)
 {

@@ -31,6 +31,10 @@ typedef std::list<MyTask> QueueofTasks;
 typedef std::list<MyTask> WaitingQueue; 
 typedef std::list<Resource> QueueofResources; 
 
+std::ostream& operator <<(std::ostream& os, const SimpleSemaphore smp);
+std::ostream& operator <<(std::ostream& os, const Resource rsc);
+std::ostream& operator <<(std::ostream& os, const MyTask& task);
+
 class OS_MODEL
 {
     public:
