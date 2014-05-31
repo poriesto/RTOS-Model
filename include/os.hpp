@@ -5,13 +5,6 @@
 #define MAX_TASKS (int)32
 #define MAX_RESOURCES (int)16
 
-struct SimpleSemaphore
-{
-	std::string SemaphoreName;
-	int UserCounter;
-	std::string ReourceName;
-};
-
 struct MyTask
 {
 	int Prior;
@@ -19,8 +12,24 @@ struct MyTask
 	std::string TaskName;
 };
 
-typedef std::list<MyTask> QueueofTasks;
+struct SimpleSemaphore
+{
+	std::string SemaphoreName;
+	int Counter;
+	bool Aviavable;
+	std::string ResourceName;
+};
 
+struct Resource
+{
+	std::string ResourceName;
+	std::string TaskNameOwner;
+	SimpleSemaphore smp;	
+};
+
+typedef std::list<MyTask> QueueofTasks;
+typedef std::list<MyTask> WaitingQueue; 
+typedef std::list<Resource> QueueofResources; 
 
 class OS_MODEL
 {
@@ -29,11 +38,17 @@ class OS_MODEL
 	static bool Schedule ();
 	static void Disptatch (std::string TaskName);
 	static void ActivateTask (std::string Name);
-	static void TerminateTask(); // feature under pre investigation control
+	static void TerminateTask(); // feature under pre investigation control delete from list
 	void DeclareTask(std::string TaskName, int Priority, void(*fun)(void)); // later reflect on the implementation of bool
 	// some debug stuff in next verison it will be private(for ut)
 	void PringQueue(void);
+	void PringQueueRsc(void);
+	//some for resources
+	void DeclareResource(std::string ReourceName, SimpleSemaphore &smp);
+	static bool GetReosurce(std::string ResourceName);
+	static bool ReleaseResource(std::string ResourceName);
 	private:
 	MyTask OsTask;
+	Resource OsResource;
 };
 
