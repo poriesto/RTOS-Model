@@ -4,11 +4,23 @@ static QueueofTasks OsQueue;
 static QueueofResources ResQueue;
 using namespace std;
 
+//some overloads
+ostream& operator <<(ostream& os, const MyTask& task)
+{
+	os << "Task name: " << task.TaskName << ", Task Priority: " << task.Prior;
+	return os;
+}
+ostream& operator <<(ostream& os, const Resource rsc)
+{
+	os << "Resource name: " << rsc.ResourceName << ", Resource TaskNameOwner: " << rsc.TaskNameOwner;
+	return os;
+}
+
 void OS_MODEL::PringQueue(void)
 {
 	for(auto val : OsQueue)
 	{
-		cout << " " << val.TaskName;
+		cout << val << endl;
 	}
 }
 void OS_MODEL::DeclareTask(string TaskName, int Priority, void(*fun)(void))
@@ -58,7 +70,7 @@ bool OS_MODEL::GetReosurce(string ResourceName)
 void OS_MODEL::PringQueueRsc(void)
 {
 	for(auto value : ResQueue){
-		cout << value.ResourceName;
+		cout << value << endl;
 	}
 }
 
