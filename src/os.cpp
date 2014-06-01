@@ -1,7 +1,7 @@
 #include "../include/os.hpp"
 
 static QueueofTasks OsQueue;
-static QueueofTasks CompletedTask;
+QueueofTasks CompletedTask;
 static QueueofTasks WaitingTask;
 static QueueofResources ResQueue;
 using namespace std;
@@ -50,13 +50,7 @@ void OS_MODEL::ActivateTask(string Name)
 void OS_MODEL::TerminateTask()
 {
 	CompletedTask.push_back(OsTask);
-	for(auto value : OsQueue)
-	{
-		if(value.TaskName == OsTask.TaskName)
-		{
-			OsQueue.remove(value);
-		}
-	}
+	OsQueue.remove(OsTask);
 }
 void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
 {
