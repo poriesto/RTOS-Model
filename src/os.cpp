@@ -1,6 +1,8 @@
 #include "../include/os.hpp"
 
 static QueueofTasks OsQueue;
+static QueueofTasks CompletedTask;
+static QueueofTasks WaitingTask;
 static QueueofResources ResQueue;
 using namespace std;
 
@@ -45,7 +47,17 @@ void OS_MODEL::ActivateTask(string Name)
 	if (IsScheduled) Disptatch(Name);
 
 }
-
+void OS_MODEL::TerminateTask()
+{
+	CompletedTask.push_back(OsTask);
+	for(auto value : OsQueue)
+	{
+		if(value.TaskName == OsTask.TaskName)
+		{
+			OsQueue.remove(value);
+		}
+	}
+}
 void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
 {
 	if(ResQueue.size() < MAX_RESOURCES)
@@ -55,7 +67,6 @@ void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
 		ResQueue.insert(begin(ResQueue), OsResource);
 	}
 }
-
 bool OS_MODEL::GetReosurce(string ResourceName)
 {
 	for(auto value : ResQueue)
@@ -72,14 +83,12 @@ bool OS_MODEL::GetReosurce(string ResourceName)
 	}
 	return true;
 }
-
 void OS_MODEL::PringQueueRsc(void)
 {
 	for(auto value : ResQueue){
 		cout << value << endl;
 	}
 }
-
 bool OS_MODEL::Schedule(void)
 {
 	OsQueue.sort([](MyTask a, MyTask b)
@@ -88,7 +97,6 @@ bool OS_MODEL::Schedule(void)
 			});
 	return true;
 }
-
 void OS_MODEL::Disptatch(string TaskName)
 {
 	for(auto value : OsQueue)
@@ -100,5 +108,4 @@ void OS_MODEL::Disptatch(string TaskName)
 		}
 	}
 }
-
 
