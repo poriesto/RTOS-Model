@@ -39,11 +39,12 @@ class OS_MODEL
 		static bool Schedule ();
 		static void Disptatch (std::string TaskName);
 		static void ActivateTask (std::string Name);
-		void TerminateTask(); // feature under pre investigation control delete from list and push to completed task
+		void TerminateTask(std::string TaskName); // feature under pre investigation control delete from list and push to completed task
 		void DeclareTask(std::string TaskName, int Priority, void(*fun)(void)); // later reflect on the implementation of bool
 		// some debug stuff in next verison it will be private(for ut)
 		void PringQueue(void);
 		void PringQueueRsc(void);
+		void PringComp(void);
 		//some for resources
 		void DeclareResource(std::string ReourceName, SimpleSemaphore &smp);
 		static bool GetReosurce(std::string ResourceName);

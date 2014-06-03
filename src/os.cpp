@@ -31,6 +31,13 @@ void OS_MODEL::PringQueue(void)
 		cout << val << endl;
 	}
 }
+void OS_MODEL::PringComp(void)
+{
+	for(auto value : CompletedTask)
+	{
+		cout << value << endl;
+	}
+}
 void OS_MODEL::DeclareTask(string TaskName, int Priority, void(*fun)(void))
 {
 	if (OsQueue.size() <= MAX_TASKS )
@@ -47,10 +54,19 @@ void OS_MODEL::ActivateTask(string Name)
 	if (IsScheduled) Disptatch(Name);
 
 }
-void OS_MODEL::TerminateTask()
+void OS_MODEL::TerminateTask(string TaskName)
 {
-	CompletedTask.push_back(OsTask);
-	OsQueue.remove(OsTask);
+	for(auto value : OsQueue)
+	{
+		OsQueue.remove_if([&](MyTask left)
+				{
+					if(left.TaskName == TaskName)
+					{
+						CompletedTask.push_back(left);
+					}
+					return left.TaskName == TaskName;
+				});
+	}
 }
 void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
 {

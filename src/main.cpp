@@ -42,7 +42,10 @@ int main(int argc, char *argv[])
 	cout << "ResQu" << endl;
 	OS -> PringQueueRsc();
 	cout << smp;
-	OS -> TerminateTask();
+	OS -> TerminateTask("sometask1");
+	cout << "\nCompletedTask" << endl;
+	OS -> PringComp();
+	cout << "\nAfterTerminate" << endl;
 	OS -> PringQueue();
 	return 0;
 }
