@@ -27,6 +27,7 @@ struct Resource
 
 typedef std::list<MyTask> QueueofTasks;
 typedef std::list<Resource> QueueofResources; 
+typedef QueueofTasks::iterator _iterator;
 
 std::ostream& operator <<(std::ostream& os, const SimpleSemaphore smp);
 std::ostream& operator <<(std::ostream& os, const Resource rsc);
@@ -39,7 +40,8 @@ class OS_MODEL
 		static bool Schedule ();
 		static void Disptatch (std::string TaskName);
 		static void ActivateTask (std::string Name);
-		void TerminateTask(std::string TaskName); // feature under pre investigation control delete from list and push to completed task
+		static _iterator FindTask(std::string TaskName);
+		static void TerminateTask(_iterator it); // feature under pre investigation control delete from list and push to completed task
 		void DeclareTask(std::string TaskName, int Priority, void(*fun)(void)); // later reflect on the implementation of bool
 		// some debug stuff in next verison it will be private(for ut)
 		void PringQueue(void);
@@ -49,6 +51,8 @@ class OS_MODEL
 		void DeclareResource(std::string ReourceName, SimpleSemaphore &smp);
 		static bool GetReosurce(std::string ResourceName);
 		static bool ReleaseResource(std::string ResourceName);
+		static SimpleSemaphore setSemaphore(std::string SemaphoreName, int Counter, 
+				bool Aviavable, std::string ResourceName);
 	private:
 		MyTask OsTask;
 		Resource OsResource;

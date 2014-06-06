@@ -1,8 +1,8 @@
 #include "../include/os.hpp"
 
-static QueueofTasks OsQueue;
+QueueofTasks OsQueue;
 QueueofTasks CompletedTask;
-static QueueofTasks WaitingTask;
+QueueofTasks WaitingTask;
 static QueueofResources ResQueue;
 using namespace std;
 
@@ -26,9 +26,9 @@ ostream& operator <<(ostream& os, const SimpleSemaphore smp)
 
 void OS_MODEL::PringQueue(void)
 {
-	for(auto val : OsQueue)
+	for(auto value : OsQueue)
 	{
-		cout << val << endl;
+		cout << value << endl;
 	}
 }
 void OS_MODEL::PringComp(void)
@@ -52,20 +52,25 @@ void OS_MODEL::ActivateTask(string Name)
 {
 	bool IsScheduled = Schedule();
 	if (IsScheduled) Disptatch(Name);
-
 }
-void OS_MODEL::TerminateTask(string TaskName)
+void OS_MODEL::TerminateTask(_iterator it)
 {
-	for(auto value : OsQueue)
+	CompletedTask.push_front(*it);
+	OsQueue.erase(it);
+}
+_iterator OS_MODEL::FindTask(string TaskName)
+{
+	_iterator it = OsQueue.begin();
+	while(it != OsQueue.end())
 	{
-		OsQueue.remove_if([&](MyTask left)
-				{
-					if(left.TaskName == TaskName)
-					{
-						CompletedTask.push_back(left);
-					}
-					return left.TaskName == TaskName;
-				});
+		if(it -> TaskName == TaskName)
+		{
+			return it;
+		}
+		else
+		{
+			it++;
+		}
 	}
 }
 void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
@@ -93,6 +98,16 @@ bool OS_MODEL::GetReosurce(string ResourceName)
 	}
 	return true;
 }
+SimpleSemaphore OS_MODEL::setSemaphore(string SemaphoreName, int Counter,
+		bool Aviavable, string ResourceName)
+{
+	SimpleSemaphore smp;
+	smp.SemaphoreName = SemaphoreName;
+	smp.Counter = Counter;
+	smp.Aviavable = Aviavable;
+	smp.ResourceName = ResourceName;
+	return smp;
+}
 void OS_MODEL::PringQueueRsc(void)
 {
 	for(auto value : ResQueue){
@@ -109,13 +124,21 @@ bool OS_MODEL::Schedule(void)
 }
 void OS_MODEL::Disptatch(string TaskName)
 {
-	for(auto value : OsQueue)
+/*	for(auto value : OsQueue)
 	{
 		value.action();
 		if(value.TaskName == TaskName)
 		{
 			break;
 		}
+	}*/
+	_iterator it = OsQueue.begin();
+	_iterator end = OsQueue.end();
+	while(it != end)
+	{
+		it->action();
+		end = OsQueue.end();
+		it = OsQueue.begin();
 	}
 }
 
