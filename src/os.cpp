@@ -55,8 +55,10 @@ void OS_MODEL::ActivateTask(string Name)
 }
 void OS_MODEL::TerminateTask(_iterator it)
 {
+	cout << "Terminate Task " << it->TaskName << endl;
 	CompletedTask.push_front(*it);
 	OsQueue.erase(it);
+	cout << "End of Terminate Task " << CompletedTask.begin() ->TaskName << endl;
 }
 _iterator OS_MODEL::FindTask(string TaskName)
 {
@@ -72,6 +74,7 @@ _iterator OS_MODEL::FindTask(string TaskName)
 			it++;
 		}
 	}
+	return OsQueue.end();
 }
 void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
 {
@@ -124,21 +127,17 @@ bool OS_MODEL::Schedule(void)
 }
 void OS_MODEL::Disptatch(string TaskName)
 {
-/*	for(auto value : OsQueue)
-	{
-		value.action();
-		if(value.TaskName == TaskName)
-		{
-			break;
-		}
-	}*/
+	cout << "@Disptatch " << TaskName << endl;
 	_iterator it = OsQueue.begin();
 	_iterator end = OsQueue.end();
 	while(it != end)
 	{
+		cout << "\tCurrent Task on execute " << it->TaskName << endl;
 		it->action();
 		end = OsQueue.end();
 		it = OsQueue.begin();
 	}
+	
+	cout << "@End of Disptatch " << TaskName << endl;
 }
 
