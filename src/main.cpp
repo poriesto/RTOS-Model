@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 
 	OS->PringQueue();
 	cout << endl;
-	OS->ActivateTask("sometask2");
+	OS->ActivateTask("sometask1");
 	
 	/*cout << "ResQu" << endl;
 	OS -> PringQueueRsc();

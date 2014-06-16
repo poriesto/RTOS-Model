@@ -137,6 +137,5 @@ void OS_MODEL::Disptatch(string TaskName)
 		end = OsQueue.end();
 		it = OsQueue.begin();
 	}
-	
 	cout << "@End of Disptatch " << TaskName << endl;
 }
