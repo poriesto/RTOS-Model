@@ -1,5 +1,5 @@
-CC=clang++
-CFLAGS=-std=c++11 -Wall -o3 -g
+CC := clang++
+CFLAGS := -std=c++11 -Wall -o3 -g
 
 BUILD_DIR  := bin
 SOURCE_DIR := src

@@ -42,11 +42,10 @@ class OS_MODEL
 		static void ActivateTask (std::string Name);
 		static _iterator FindTask(std::string TaskName);
 		static void TerminateTask(_iterator it); // feature under pre investigation control delete from list and push to completed task
-		void DeclareTask(std::string TaskName, int Priority, void(*fun)(void)); // later reflect on the implementation of bool
+		void DeclareTask(std::string TaskName, int Priority, void(*fun)(void));	
 		// some debug stuff in next verison it will be private(for ut)
-		void PringQueue(void);
+		void DebugPring(std::string list);
 		void PringQueueRsc(void);
-		void PringComp(void);
 		//some for resources
 		void DeclareResource(std::string ReourceName, SimpleSemaphore &smp);
 		static bool GetReosurce(std::string ResourceName);

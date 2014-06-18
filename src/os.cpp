@@ -24,18 +24,28 @@ ostream& operator <<(ostream& os, const SimpleSemaphore smp)
 	return os;
 }
 
-void OS_MODEL::PringQueue(void)
+void OS_MODEL::DebugPring(string list)
 {
-	for(auto value : OsQueue)
+	if(list == "OsQueue")
 	{
-		cout << value << endl;
+		for(auto value : OsQueue)
+		{
+			cout << value << endl;
+		}
 	}
-}
-void OS_MODEL::PringComp(void)
-{
-	for(auto value : CompletedTask)
+	else if(list == "CompletedTask")
 	{
-		cout << value << endl;
+		for(auto value : CompletedTask)
+		{
+			cout << value << endl;
+		}
+	}
+	else
+	{
+		for(auto value : ResQueue)
+		{
+			cout << value << endl;
+		}
 	}
 }
 void OS_MODEL::DeclareTask(string TaskName, int Priority, void(*fun)(void))
@@ -55,10 +65,10 @@ void OS_MODEL::ActivateTask(string Name)
 }
 void OS_MODEL::TerminateTask(_iterator it)
 {
-	cout << "Terminate Task " << it->TaskName << endl;
+	cout << "\t\tTerminate Task " << it->TaskName << endl;
 	CompletedTask.push_front(*it);
 	OsQueue.erase(it);
-	cout << "End of Terminate Task " << CompletedTask.begin() ->TaskName << endl;
+	cout << "\t\tEnd of Terminate Task " << CompletedTask.begin() ->TaskName << endl;
 }
 _iterator OS_MODEL::FindTask(string TaskName)
 {
@@ -110,12 +120,6 @@ SimpleSemaphore OS_MODEL::setSemaphore(string SemaphoreName, int Counter,
 	smp.Aviavable = Aviavable;
 	smp.ResourceName = ResourceName;
 	return smp;
-}
-void OS_MODEL::PringQueueRsc(void)
-{
-	for(auto value : ResQueue){
-		cout << value << endl;
-	}
 }
 bool OS_MODEL::Schedule(void)
 {
