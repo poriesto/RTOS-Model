@@ -33,10 +33,18 @@ std::ostream& operator <<(std::ostream& os, const SimpleSemaphore smp);
 std::ostream& operator <<(std::ostream& os, const Resource rsc);
 std::ostream& operator <<(std::ostream& os, const MyTask& task);
 
+//actions for OS task
+void act(void);
+void act1(void);
+void act2(void);
+void act4(void);
+void idealTask1(void);
+void idealTask2(void);
+
 class OS_MODEL
 {
     public:
- 	  	int Start_OS(MyTask &Task);
+ 	  	int Start_OS(void);
 		static bool Schedule ();
 		static void Disptatch (std::string TaskName);
 		static void ActivateTask (std::string Name);
@@ -55,4 +63,5 @@ class OS_MODEL
 	private:
 		MyTask OsTask;
 		Resource OsResource;
+		SimpleSemaphore smp;
 };
