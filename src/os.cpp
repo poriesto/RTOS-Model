@@ -3,8 +3,7 @@
 QueueofTasks OsQueue;
 QueueofTasks CompletedTask;
 QueueofTasks WaitingTask;
-Semaphores semaphores;
-static QueueofResources ResQueue;
+QueueofResources ResQueue;
 
 using namespace std;
 
@@ -16,7 +15,8 @@ ostream& operator <<(ostream& os, const MyTask& task)
 }
 ostream& operator <<(ostream& os, const Resource rsc)
 {
-	os << "Resource name: " << rsc.ResourceName << ", Resource TaskNameOwner: " << rsc.TaskNameOwner;
+	os << "Resource name: " << rsc.ResourceName << ", Resource TaskNameOwner: " << rsc.TaskNameOwner 
+		<< "\nSemaphore status: " << rsc.smp;
 	return os;
 }
 ostream& operator <<(ostream& os, const SimpleSemaphore smp)
@@ -31,9 +31,10 @@ int OS_MODEL::Start_OS(void)
 	DeclareTask("sometask2", 5, act2);
 	DeclareTask("sometask3", 7, act1);
 	DeclareTask("sometask4", 12, act4);
-	DeclareResource("Resource1", smp);
+	SimpleSemaphore sm = DeclareSemaphore("Sem1", -1, true, "Resource1");
+	DeclareResource("Resource1", sm);
 	DeclareResource("Resource2", smp);
-	DeclareSemaphore("Sem1", -1, true, "Resource1");
+	//DeclareSemaphore("Sem1", -1, true, "Resource1");
 	//smp = setSemaphore("Sem1", -1, true, "Resource1");
 	return 0;
 }
@@ -128,6 +129,30 @@ bool OS_MODEL::GetReosurce(string ResourceName, string TaskName)
 				value.smp.Aviavable = false;
 				value.smp.Counter += 1;
 				value.TaskNameOwner = TaskName;
+				cout << value << endl;
+				status = true;
+			}
+			else
+			{
+				status = false;
+			}
+		}
+	}
+	return status;
+}
+bool OS_MODEL::ReleaseResource(string ResourceName)
+{
+	bool status;
+	for(auto value : ResQueue)
+	{
+		if(value.ResourceName == ResourceName)
+		{
+			if(!value.smp.Aviavable)
+			{
+				value.smp.Aviavable = true;
+				value.smp.Counter -= 1;
+				value.TaskNameOwner = "";
+				cout << value << endl;
 				status = true;
 			}
 			else
@@ -175,6 +200,22 @@ void act1(void)
 {
 	cout << "\tBegin Task3" << endl;
 	cout << "\t\tWorking Task3" << endl;
+	if(OS_MODEL::GetReosurce("Resource1", "sometask3"))
+	{
+		cout << "\t\tResource1 taked by sometask3\n" ;
+	}
+	else
+	{
+		cout << "\t\tReosurce1 cant taked by sometask3\n";
+	}
+	/*if(OS_MODEL::ReleaseResource("Resource1"))
+	{
+		cout << "\t\tResource1 released by sometask3\n";
+	}
+	else
+	{
+		cout << "\t\tResource1 cant released by sometask3\n";
+	}*/
 	OS_MODEL::TerminateTask(OS_MODEL::FindTask("sometask3"));
 	cout << "\tEnd Task3" << endl;
 }
