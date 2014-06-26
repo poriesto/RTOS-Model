@@ -3,7 +3,9 @@
 QueueofTasks OsQueue;
 QueueofTasks CompletedTask;
 QueueofTasks WaitingTask;
+Semaphores semaphores;
 static QueueofResources ResQueue;
+
 using namespace std;
 
 //some overloads
@@ -31,7 +33,8 @@ int OS_MODEL::Start_OS(void)
 	DeclareTask("sometask4", 12, act4);
 	DeclareResource("Resource1", smp);
 	DeclareResource("Resource2", smp);
-	smp = setSemaphore("Sem1", -1, true, "Resource1");
+	DeclareSemaphore("Sem1", -1, true, "Resource1");
+	//smp = setSemaphore("Sem1", -1, true, "Resource1");
 	return 0;
 }
 void OS_MODEL::DebugPring(string list)
@@ -67,6 +70,14 @@ void OS_MODEL::DeclareTask(string TaskName, int Priority, void(*fun)(void))
 		OsTask.action = fun;
 		OsQueue.insert (OsQueue.begin(), OsTask);
 	};
+}
+SimpleSemaphore OS_MODEL::DeclareSemaphore(string SemaphoreName, int Counter, bool Aviavable, string ResourceName)
+{
+	smp.SemaphoreName = SemaphoreName;
+	smp.Counter = Counter;
+	smp.Aviavable = Aviavable;
+	smp.ResourceName = ResourceName;
+	return smp;
 }
 void OS_MODEL::ActivateTask(string Name)
 {
@@ -105,8 +116,9 @@ void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
 		ResQueue.insert(begin(ResQueue), OsResource);
 	}
 }
-bool OS_MODEL::GetReosurce(string ResourceName)
+bool OS_MODEL::GetReosurce(string ResourceName, string TaskName)
 {
+	bool status;
 	for(auto value : ResQueue)
 	{
 		if(value.ResourceName == ResourceName)
@@ -115,21 +127,16 @@ bool OS_MODEL::GetReosurce(string ResourceName)
 			{
 				value.smp.Aviavable = false;
 				value.smp.Counter += 1;
-				value.TaskNameOwner = "NULL";
+				value.TaskNameOwner = TaskName;
+				status = true;
+			}
+			else
+			{
+				status = false;
 			}
 		}
 	}
-	return true;
-}
-SimpleSemaphore OS_MODEL::setSemaphore(string SemaphoreName, int Counter,
-		bool Aviavable, string ResourceName)
-{
-	SimpleSemaphore smp;
-	smp.SemaphoreName = SemaphoreName;
-	smp.Counter = Counter;
-	smp.Aviavable = Aviavable;
-	smp.ResourceName = ResourceName;
-	return smp;
+	return status;
 }
 bool OS_MODEL::Schedule(void)
 {
@@ -164,13 +171,6 @@ void act(void)
 	cout << "\t\t_Drop from Task2" << endl;
 	cout << "\t!End Task1" << endl;
 }
-void act4(void)
-{
-	cout << "\tBegin Task4" << endl;
-	cout << "\t\tWorking Task4" << endl;
-	OS_MODEL::TerminateTask(OS_MODEL::FindTask("sometask4"));
-	cout << "\tEnd Task4" << endl;
-}
 void act1(void)
 {
 	cout << "\tBegin Task3" << endl;
@@ -188,7 +188,13 @@ void act2(void)
 	cout << "\t\t_Drop from Task1" << endl;
 	cout << "\t!End Task2" << endl;
 }
-
+void act4(void)
+{
+	cout << "\tBegin Task4" << endl;
+	cout << "\t\tWorking Task4" << endl;
+	OS_MODEL::TerminateTask(OS_MODEL::FindTask("sometask4"));
+	cout << "\tEnd Task4" << endl;
+}
 //DONT USE THIS. feauture under developmemt
 void idealTask1(void)
 {
@@ -210,5 +216,3 @@ void idealTask2(void)
 	OS_MODEL::TerminateTask(OS_MODEL::FindTask("sometask2"));
 	cout << "!End Task2\n" << endl;
 }
-
-

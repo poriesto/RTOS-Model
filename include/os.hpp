@@ -2,8 +2,8 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
-#define MAX_TASKS (int)32
-#define MAX_RESOURCES (int)16
+#define MAX_TASKS 32
+#define MAX_RESOURCES 16
 
 struct MyTask
 {
@@ -50,16 +50,15 @@ class OS_MODEL
 		static void ActivateTask (std::string Name);
 		static _iterator FindTask(std::string TaskName);
 		static void TerminateTask(_iterator it); // feature under pre investigation control delete from list and push to completed task
-		void DeclareTask(std::string TaskName, int Priority, void(*fun)(void));	
+		void DeclareTask(std::string TaskName, int Priority, void(*fun)(void), SimpleSemaphore smp);
+		void DeclareSemaphore(std::string SemaphoreName, int Counter, bool Aviavable, std::string ReourceName);
 		// some debug stuff in next verison it will be private(for ut)
 		void DebugPring(std::string list);
 		void PringQueueRsc(void);
 		//some for resources
 		void DeclareResource(std::string ReourceName, SimpleSemaphore &smp);
-		static bool GetReosurce(std::string ResourceName);
+		static bool GetReosurce(std::string ResourceName, std::string TaskName);
 		static bool ReleaseResource(std::string ResourceName);
-		static SimpleSemaphore setSemaphore(std::string SemaphoreName, int Counter, 
-				bool Aviavable, std::string ResourceName);
 	private:
 		MyTask OsTask;
 		Resource OsResource;
