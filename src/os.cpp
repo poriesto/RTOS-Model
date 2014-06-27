@@ -15,7 +15,7 @@ ostream& operator <<(ostream& os, const MyTask& task)
 }
 ostream& operator <<(ostream& os, const Resource rsc)
 {
-	os << "Resource name: " << rsc.ResourceName << ", Resource TaskNameOwner: " << rsc.TaskNameOwner 
+	os << "Resource name: " << rsc.ResourceName << ", Resource TaskNameOwner: " << rsc.TaskNameOwner
 		<< "\nSemaphore status: " << rsc.smp;
 	return os;
 }
@@ -32,31 +32,30 @@ int OS_MODEL::Start_OS(void)
 	DeclareTask("sometask3", 7, act1);
 	DeclareTask("sometask4", 12, act4);
 	SimpleSemaphore sm = DeclareSemaphore("Sem1", -1, true, "Resource1");
+	SimpleSemaphore sm1 = DeclareSemaphore("Sem2", -1, true, "Resource2");
 	DeclareResource("Resource1", sm);
-	DeclareResource("Resource2", smp);
-	//DeclareSemaphore("Sem1", -1, true, "Resource1");
-	//smp = setSemaphore("Sem1", -1, true, "Resource1");
+	DeclareResource("Resource2", sm1);
 	return 0;
 }
 void OS_MODEL::DebugPring(string list)
 {
-	if(list == "OsQueue")
+	if (list == "OsQueue")
 	{
-		for(auto value : OsQueue)
+		for (auto value : OsQueue)
 		{
 			cout << value << endl;
 		}
 	}
-	else if(list == "CompletedTask")
+	else if (list == "CompletedTask")
 	{
-		for(auto value : CompletedTask)
+		for (auto value : CompletedTask)
 		{
 			cout << value << endl;
 		}
 	}
 	else
 	{
-		for(auto value : ResQueue)
+		for (auto value : ResQueue)
 		{
 			cout << value << endl;
 		}
@@ -64,12 +63,12 @@ void OS_MODEL::DebugPring(string list)
 }
 void OS_MODEL::DeclareTask(string TaskName, int Priority, void(*fun)(void))
 {
-	if (OsQueue.size() <= MAX_TASKS )
+	if (OsQueue.size() <= MAX_TASKS)
 	{
 		OsTask.TaskName = TaskName;
 		OsTask.Prior = Priority;
 		OsTask.action = fun;
-		OsQueue.insert (OsQueue.begin(), OsTask);
+		OsQueue.insert(OsQueue.begin(), OsTask);
 	};
 }
 SimpleSemaphore OS_MODEL::DeclareSemaphore(string SemaphoreName, int Counter, bool Aviavable, string ResourceName)
@@ -90,14 +89,14 @@ void OS_MODEL::TerminateTask(_iterator it)
 	cout << "\t\tTerminate Task " << it->TaskName << endl;
 	CompletedTask.push_front(*it);
 	OsQueue.erase(it);
-	cout << "\t\tEnd of Terminate Task " << CompletedTask.begin() ->TaskName << endl;
+	cout << "\t\tEnd of Terminate Task " << CompletedTask.begin()->TaskName << endl;
 }
 _iterator OS_MODEL::FindTask(string TaskName)
 {
 	_iterator it = OsQueue.begin();
-	while(it != OsQueue.end())
+	while (it != OsQueue.end())
 	{
-		if(it -> TaskName == TaskName)
+		if (it->TaskName == TaskName)
 		{
 			return it;
 		}
@@ -108,9 +107,24 @@ _iterator OS_MODEL::FindTask(string TaskName)
 	}
 	return OsQueue.end();
 }
+resiter OS_MODEL::FindResource(string ResourceName)
+{
+	resiter it = begin(ResQueue);
+	while (it != end(ResQueue))
+	{
+		if (it->ResourceName == ResourceName)
+		{
+			return it;
+		}
+		else
+		{
+			it++;
+		}
+	}
+}
 void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
 {
-	if(ResQueue.size() < MAX_RESOURCES)
+	if (ResQueue.size() < MAX_RESOURCES)
 	{
 		OsResource.ResourceName = ResourceName;
 		OsResource.smp = smp;
@@ -120,16 +134,15 @@ void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
 bool OS_MODEL::GetReosurce(string ResourceName, string TaskName)
 {
 	bool status;
-	for(auto value : ResQueue)
+	for (resiter it = begin(ResQueue); it != end(ResQueue); it++)
 	{
-		if(value.ResourceName == ResourceName)
+		if (it->ResourceName == ResourceName)
 		{
-			if(value.smp.Aviavable)
+			if (it->smp.Aviavable)
 			{
-				value.smp.Aviavable = false;
-				value.smp.Counter += 1;
-				value.TaskNameOwner = TaskName;
-				cout << value << endl;
+				it->smp.Aviavable = false;
+				it->smp.Counter += 1;
+				it->TaskNameOwner = TaskName;
 				status = true;
 			}
 			else
@@ -143,22 +156,18 @@ bool OS_MODEL::GetReosurce(string ResourceName, string TaskName)
 bool OS_MODEL::ReleaseResource(string ResourceName)
 {
 	bool status;
-	for(auto value : ResQueue)
+	for (resiter it = begin(ResQueue); it != end(ResQueue); it++)
 	{
-		if(value.ResourceName == ResourceName)
+		if (!it->smp.Aviavable)
 		{
-			if(!value.smp.Aviavable)
-			{
-				value.smp.Aviavable = true;
-				value.smp.Counter -= 1;
-				value.TaskNameOwner = "";
-				cout << value << endl;
-				status = true;
-			}
-			else
-			{
-				status = false;
-			}
+			it->smp.Aviavable = true;
+			it->smp.Counter -= 1;
+			it->TaskNameOwner = "";
+			status = true;
+		}
+		else
+		{
+			status = false;
 		}
 	}
 	return status;
@@ -166,9 +175,9 @@ bool OS_MODEL::ReleaseResource(string ResourceName)
 bool OS_MODEL::Schedule(void)
 {
 	OsQueue.sort([](MyTask a, MyTask b)
-			{
-				return a.Prior > b.Prior;
-			});
+	{
+		return a.Prior > b.Prior;
+	});
 	return true;
 }
 void OS_MODEL::Disptatch(string TaskName)
@@ -176,7 +185,7 @@ void OS_MODEL::Disptatch(string TaskName)
 	cout << "@Disptatch " << TaskName << endl;
 	_iterator it = OsQueue.begin();
 	_iterator end = OsQueue.end();
-	while(it != end)
+	while (it != end)
 	{
 		cout << "\tCurrent Task on execute " << it->TaskName << endl;
 		it->action();
@@ -188,7 +197,7 @@ void OS_MODEL::Disptatch(string TaskName)
 
 void act(void)
 {
-	cout << "\t!Begin Task1" <<endl;
+	cout << "\t!Begin Task1" << endl;
 	cout << "\t\tWorking Task1" << endl;
 	OS_MODEL::TerminateTask(OS_MODEL::FindTask("sometask1"));
 	cout << "\t\t_Jump to Task2" << endl;
@@ -200,22 +209,23 @@ void act1(void)
 {
 	cout << "\tBegin Task3" << endl;
 	cout << "\t\tWorking Task3" << endl;
-	if(OS_MODEL::GetReosurce("Resource1", "sometask3"))
+	if (OS_MODEL::GetReosurce("Resource1", "sometask3"))
 	{
-		cout << "\t\tResource1 taked by sometask3\n" ;
+		cout << "\t\tResource1 taked by sometask3\n";
+		//cout << *OS_MODEL::FindResource("Resource1") << endl;
 	}
 	else
 	{
 		cout << "\t\tReosurce1 cant taked by sometask3\n";
 	}
-	/*if(OS_MODEL::ReleaseResource("Resource1"))
+	if(OS_MODEL::ReleaseResource("Resource1"))
 	{
 		cout << "\t\tResource1 released by sometask3\n";
 	}
 	else
 	{
 		cout << "\t\tResource1 cant released by sometask3\n";
-	}*/
+	}
 	OS_MODEL::TerminateTask(OS_MODEL::FindTask("sometask3"));
 	cout << "\tEnd Task3" << endl;
 }
