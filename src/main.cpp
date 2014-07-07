@@ -6,7 +6,6 @@ int main(int argc, char *argv[])
 	OS_MODEL *OS = new OS_MODEL();
 	
 	OS -> Start_OS();
-	
 	OS -> DebugPring("OsQueue");
 	cout << endl;
 	OS->ActivateTask("sometask1");

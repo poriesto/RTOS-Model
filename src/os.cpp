@@ -68,7 +68,7 @@ void OS_MODEL::DeclareTask(string TaskName, int Priority, void(*fun)(void))
 		OsTask.TaskName = TaskName;
 		OsTask.Prior = Priority;
 		OsTask.action = fun;
-		OsQueue.insert(OsQueue.begin(), OsTask);
+		OsQueue.insert(begin(OsQueue), OsTask);
 	};
 }
 SimpleSemaphore OS_MODEL::DeclareSemaphore(string SemaphoreName, int Counter, bool Aviavable, string ResourceName)
@@ -93,8 +93,8 @@ void OS_MODEL::TerminateTask(_iterator it)
 }
 _iterator OS_MODEL::FindTask(string TaskName)
 {
-	_iterator it = OsQueue.begin();
-	while (it != OsQueue.end())
+	_iterator it = begin(OsQueue);
+	while (it != end(OsQueue))
 	{
 		if (it->TaskName == TaskName)
 		{
@@ -105,7 +105,7 @@ _iterator OS_MODEL::FindTask(string TaskName)
 			it++;
 		}
 	}
-	return OsQueue.end();
+	return it;
 }
 resiter OS_MODEL::FindResource(string ResourceName)
 {
@@ -121,6 +121,7 @@ resiter OS_MODEL::FindResource(string ResourceName)
 			it++;
 		}
 	}
+	return it;
 }
 void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
 {
@@ -133,7 +134,6 @@ void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
 }
 bool OS_MODEL::GetReosurce(string ResourceName, string TaskName)
 {
-	bool status;
 	for (resiter it = begin(ResQueue); it != end(ResQueue); it++)
 	{
 		if (it->ResourceName == ResourceName)
@@ -143,34 +143,39 @@ bool OS_MODEL::GetReosurce(string ResourceName, string TaskName)
 				it->smp.Aviavable = false;
 				it->smp.Counter += 1;
 				it->TaskNameOwner = TaskName;
-				status = true;
+				return true;
 			}
 			else
 			{
-				status = false;
+				return false;
 			}
 		}
 	}
-	return status;
+	return false;
 }
 bool OS_MODEL::ReleaseResource(string ResourceName)
 {
-	bool status;
+	cout << "Begin Release resource" << endl;
 	for (resiter it = begin(ResQueue); it != end(ResQueue); it++)
 	{
-		if (!it->smp.Aviavable)
+		if(it->ResourceName == ResourceName)
 		{
-			it->smp.Aviavable = true;
-			it->smp.Counter -= 1;
-			it->TaskNameOwner = "";
-			status = true;
-		}
-		else
-		{
-			status = false;
+			if (!(it->smp.Aviavable))
+			{
+				it->smp.Aviavable = true;
+				it->smp.Counter -= 1;
+				it->TaskNameOwner = "";
+				cout << "End of Release Resource" << endl;
+				return true;
+			}
+			else
+			{
+				cout << endl << "End of Release Resource" << endl;
+				return false;
+			}
 		}
 	}
-	return status;
+	return false;
 }
 bool OS_MODEL::Schedule(void)
 {
@@ -212,7 +217,7 @@ void act1(void)
 	if (OS_MODEL::GetReosurce("Resource1", "sometask3"))
 	{
 		cout << "\t\tResource1 taked by sometask3\n";
-		//cout << *OS_MODEL::FindResource("Resource1") << endl;
+		cout << "\t\t"  << *OS_MODEL::FindResource("Resource1") << endl;
 	}
 	else
 	{
