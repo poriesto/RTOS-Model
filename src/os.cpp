@@ -134,15 +134,15 @@ void OS_MODEL::DeclareResource(string ResourceName, SimpleSemaphore &smp)
 }
 bool OS_MODEL::GetReosurce(string ResourceName, string TaskName)
 {
-	for (resiter it = begin(ResQueue); it != end(ResQueue); it++)
+	for(auto& value : ResQueue)
 	{
-		if (it->ResourceName == ResourceName)
+		if(value.ResourceName == ResourceName)
 		{
-			if (it->smp.Aviavable)
+			if(value.smp.Aviavable)
 			{
-				it->smp.Aviavable = false;
-				it->smp.Counter += 1;
-				it->TaskNameOwner = TaskName;
+				value.smp.Aviavable = false;
+				value.smp.Counter += 1;
+				value.TaskNameOwner = TaskName;
 				return true;
 			}
 			else
@@ -156,15 +156,16 @@ bool OS_MODEL::GetReosurce(string ResourceName, string TaskName)
 bool OS_MODEL::ReleaseResource(string ResourceName)
 {
 	cout << "Begin Release resource" << endl;
-	for (resiter it = begin(ResQueue); it != end(ResQueue); it++)
+	for(auto& value : ResQueue)
 	{
-		if(it->ResourceName == ResourceName)
+		if(value.ResourceName == ResourceName)
 		{
-			if (!(it->smp.Aviavable))
+			if(!value.smp.Aviavable)
 			{
-				it->smp.Aviavable = true;
-				it->smp.Counter -= 1;
-				it->TaskNameOwner = "";
+				value.smp.Aviavable = true;
+				value.smp.Counter -= 1;
+				value.TaskNameOwner = "";
+				cout << value << endl;
 				cout << "End of Release Resource" << endl;
 				return true;
 			}
