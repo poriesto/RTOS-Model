@@ -25,6 +25,7 @@ ostream& operator <<(ostream& os, const SimpleSemaphore smp)
 		", Aviavable: " << smp.Aviavable << ", Resource: " << smp.ResourceName;
 	return os;
 }
+//implemets class methods
 int OS_MODEL::Start_OS(void)
 {
 	DeclareTask("sometask1", 2, act);

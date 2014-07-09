@@ -57,7 +57,6 @@ public:
 	SimpleSemaphore DeclareSemaphore(std::string SemaphoreName, int Counter, bool Aviavable, std::string ReourceName);
 	// some debug stuff in next verison it will be private(for ut)
 	void DebugPring(std::string list);
-	void PringQueueRsc(void);
 	//some for resources
 	void DeclareResource(std::string ReourceName, SimpleSemaphore &smp);
 	static bool GetReosurce(std::string ResourceName, std::string TaskName);
